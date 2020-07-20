@@ -4,6 +4,7 @@ const { expect } = require('chai');
 const request = require('supertest');
 const app = require('../src/app');
 const { Artist, Album } = require('../src/models');
+const { get } = require('../src/app');
 
 describe('/albums', () => {
   let artist;
@@ -29,6 +30,15 @@ describe('/albums', () => {
       console.log(err);
     }
   });
+  afterEach(async () => {
+    try {
+      await Artist.destroy({ where: {} });
+      await Album.destroy({ where: {} });
+    }
+    catch (err) {
+      console.log(err)
+    }
+  })
 
   describe('POST /artists/:artistId/albums', () => {
     it('creates a new album for a given artist', (done) => {
@@ -68,4 +78,109 @@ describe('/albums', () => {
         });
     });
   });
-});
+  describe('with artists in the database', () => {
+    let albums = [];
+    beforeEach((done) => {
+      Album.create({ name: 'First Album', year: '2000' })
+        .then(album => {
+          album.setArtist(artist);
+          albums.push(album);
+        })
+        .then(() => Album.create({ name: 'Second Album', year: '2001' }))
+        .then(album => {
+          album.setArtist(artist);
+          albums.push(album);
+        })
+        .then(() => Album.create({ name: 'Third Album', year: '2002' }))
+        .then(album => {
+          album.setArtist(artist);
+          albums.push(album);
+          done();
+        })
+    });
+
+    describe('GET/artists/:id/albums', () => {
+      it('reads the year, name of an album by artistID', (done) => {
+        request(app)
+          .get(`/artists/${artist.id}/albums`)
+          .then((res) => {
+            expect(res.status).to.equal(200);
+            expect(res.body[0].name).to.equal('First Album');
+            expect(res.body[0].year).to.equal(2000);
+            done();
+          });
+      });
+      it('returns a 404 if the artist does not exist', (done) => {
+        request(app)
+          .get('/artists/12345/albums')
+          .then((res) => {
+            expect(res.status).to.equal(404);
+            expect(res.body.error).to.equal('The artist could not be found.');
+            done();
+          });
+      });
+    });
+
+    describe('PATCH /artists/:id/albums', () => {
+      it('updates the name of an album by artistId', (done) => {
+        request(app)
+          .patch(`/artists/${artist.id}/albums`)
+          .send({ name: 'Updated album name' })
+          .then((res) => {
+            expect(res.status).to.equal(200);
+            Album.findOne({ where: { artistId: artist.id } })
+              .then((findAlbum) => {
+                expect(findAlbum.dataValues.name).to.equal('Updated album name')
+              })
+            done();
+          })
+      })
+      it('updates the year of an album by artistId', (done) => {
+        request(app)
+          .patch(`/artists/${artist.id}/albums`)
+          .send({ year: 1234 })
+          .then((res) => {
+            expect(res.status).to.equal(200);
+            Album.findOne({ where: { artistId: artist.id } })
+              .then((findAlbum) => {
+                expect(findAlbum.dataValues.year).to.equal(1234)
+              })
+            done();
+          })
+      })
+      it('returns a 404 if the artist does not exist', (done) => {
+        request(app)
+          .patch('/artists/12345/albums')
+          .send({ year: 0000 })
+          .then((res) => {
+            expect(res.status).to.equal(404);
+            expect(res.body.error).to.equal('The artist could not be found.');
+            done();
+          });
+      });
+    })
+    describe('DELETE /artists/:id/albums', () => {
+      it('deletes the album by artistId', () => {
+        request(app)
+          .delete(`/artists/${artist.id}/albums`)
+          .then((res) => {
+            expect(res.status).to.equal(204);
+            Album.findOne({ where: { artistId: artist.id } })
+              .then((findAlbum) => {
+                expect(findAlbum).to.equal(null)
+              })
+          })
+      })
+      it('returns a 404 if the artist does not exist', (done) => {
+        request(app)
+          .delete('/artists/12345/albums')
+          .then((res) => {
+            expect(res.status).to.equal(404);
+            expect(res.body.error).to.equal('The artist could not be found.');
+            done();
+          });
+      });
+    })
+  });
+
+})
