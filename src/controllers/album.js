@@ -1,5 +1,6 @@
 const { Album } = require('../models');
 const { Artist } = require('../models');
+const album = require('../models/album');
 
 
 exports.createAlbum = (req, res) => {
@@ -37,7 +38,7 @@ exports.readingAlbumByAlbumId = (req, res) => {
     const { artistId } = req.params;
     const { albumId } = req.params
 
-    Album.findAll({ where: { artistId: artistId, id: albumId } }).then((foundAlbum) => {
+    Album.findByPk(albumId).then((foundAlbum) => {
         res.status(201).json(foundAlbum)
     }).catch((error) => {
         res.status(404).json({ error: 'This Album does not exist.' })
@@ -83,3 +84,26 @@ exports.deletingAlbumByArtistId = (req, res) => {
 
 }
 
+exports.deletingAlbumByAlbumId = (req, res) => {
+    const { artistId } = req.params
+    const { albumId } = req.params
+
+    Artist.findByPk(artistId).then((gotArtist) => {
+        console.log(gotArtist)
+        if (!gotArtist) {
+            res.status(404).json({ error: 'This Artist does not exist' })
+        } else {
+            Album.findByPk(albumId).then((foundAlbum) => {
+                if (!foundAlbum) {
+                    res.status(404).json({ error: 'This Album does not exist.' })
+                } else {
+                    Album.destroy({ where: { artistId: artistId, id: albumId } }).then((data) => {
+                        console.log(data)
+                        res.status(204).json(data)
+                    })
+                }
+            })
+
+        }
+    })
+}

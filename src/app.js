@@ -31,7 +31,7 @@ app.patch('/artists/:artistId/albums', albumControllers.updatingAlbumByArtistId)
 app.patch('/artists/:artistId/albums/:albumId', albumControllers.updatingAlbumbyAlbumId);
 
 app.delete('/artists/:artistId/albums', albumControllers.deletingAlbumByArtistId);
-//app.delete('/artists/:artistId/albums/:albumId', albumControllers.deletingAlbumByAlbumId);
+app.delete('/artists/:artistId/albums/:albumId', albumControllers.deletingAlbumByAlbumId);
 
 //SONGS
 
