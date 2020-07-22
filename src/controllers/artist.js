@@ -11,8 +11,8 @@ exports.listAllArtist = (_, res) => {
 };
 
 exports.getId = (req, res) => {
-    const id = req.params.id;
-    Artist.findByPk(id).then(artist => {
+    const { artistId } = req.params;
+    Artist.findByPk(artistId).then(artist => {
         if (!artist) {
             res.status(404).json({ error: 'The artist could not be found.' })
         } else {
@@ -22,8 +22,8 @@ exports.getId = (req, res) => {
 };
 
 exports.updateArtist = (req, res) => {
-    const { id } = req.params;
-    Artist.update(req.body, { where: { id } }).then(([rowsUpdated]) => {
+    const { artistId } = req.params;
+    Artist.update(req.body, { where: { id: artistId } }).then(([rowsUpdated]) => {
         if (!rowsUpdated) {
             res.status(404).json({ error: 'The artist could not be found.' });
         } else {
@@ -33,9 +33,9 @@ exports.updateArtist = (req, res) => {
 };
 
 exports.deleteArtist = (req, res) => {
-    const { id } = req.params;
+    const { artistId } = req.params;
     Artist.destroy({
-        where: { id }
+        where: { id: artistId }
     }).then(data => {
         if (!data) {
             res.status(404).json({ error: 'The artist could not be found.' })

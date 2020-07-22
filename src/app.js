@@ -1,7 +1,7 @@
 const express = require('express');
 const artistControllers = require('./controllers/artist.js')
 const albumControllers = require('./controllers/album.js')
-const songControllers = require('./controllers/song.js')
+const songControllers = require('./controllers/song.js');
 
 // const artistRouter = require('./routes/artist');
 // const albumRouter = require('./routes/album');
@@ -14,26 +14,31 @@ app.use(express.json());
 app.post('/artists', artistControllers.createArtist);
 
 app.get('/artists', artistControllers.listAllArtist);
+app.get('/artists/:artistId', artistControllers.getId);
 
-app.get('/artists/:id', artistControllers.getId);
+app.patch('/artists/:artistId', artistControllers.updateArtist);
 
-app.patch('/artists/:id', artistControllers.updateArtist);
-
-app.delete('/artists/:id', artistControllers.deleteArtist);
+app.delete('/artists/:artistId', artistControllers.deleteArtist);
 
 //ALBUMS
 
-app.post('/artists/:id/albums', albumControllers.createAlbum);
+app.post('/artists/:artistId/albums', albumControllers.createAlbum);
 
-app.get('/artists/:id/albums', albumControllers.readingAlbumByArtistId);
+app.get('/artists/:artistId/albums', albumControllers.readingAlbumByArtistId);
+app.get('/artists/:artistId/albums/:albumId', albumControllers.readingAlbumByAlbumId);
 
-app.patch('/artists/:id/albums', albumControllers.updatingAlbumByArtistId);
+app.patch('/artists/:artistId/albums', albumControllers.updatingAlbumByArtistId);
+//app.patch('/artists/:artistId/albums/:albumId', albumControllers.updatingAlbumbyAlbumId);
 
-app.delete('/artists/:id/albums', albumControllers.deletingAlbumByArtistId);
+app.delete('/artists/:artistId/albums', albumControllers.deletingAlbumByArtistId);
+//app.delete('/artists/:artistId/albums/:albumId', albumControllers.deletingAlbumByAlbumId);
 
 //SONGS
 
 app.post('/albums/:id/songs', songControllers.createSong);
 
+app.get('/albums/:id/songs', songControllers.getSongByAlbumId);
+
+// app.delete('albums/:id/songs', songControllers.deleteSongByAlbumId);
 
 module.exports = app;
