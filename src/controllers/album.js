@@ -56,6 +56,17 @@ exports.updatingAlbumByArtistId = (req, res) => {
         }
     })
 }
+exports.updatingAlbumbyAlbumId = (req, res) => {
+    const { artistId } = req.params
+    const { albumId } = req.params
+    Album.update(req.body, { where: { id: albumId, artistId: artistId } })
+        .then((updatedAlbum) => {
+            res.status(201).json(updatedAlbum)
+        })
+        .catch(error => {
+            res.status(404).json({ error: 'This Album does not exist.' })
+        })
+}
 
 exports.deletingAlbumByArtistId = (req, res) => {
     const { artistId } = req.params;

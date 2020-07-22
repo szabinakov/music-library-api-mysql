@@ -28,7 +28,7 @@ app.get('/artists/:artistId/albums', albumControllers.readingAlbumByArtistId);
 app.get('/artists/:artistId/albums/:albumId', albumControllers.readingAlbumByAlbumId);
 
 app.patch('/artists/:artistId/albums', albumControllers.updatingAlbumByArtistId);
-//app.patch('/artists/:artistId/albums/:albumId', albumControllers.updatingAlbumbyAlbumId);
+app.patch('/artists/:artistId/albums/:albumId', albumControllers.updatingAlbumbyAlbumId);
 
 app.delete('/artists/:artistId/albums', albumControllers.deletingAlbumByArtistId);
 //app.delete('/artists/:artistId/albums/:albumId', albumControllers.deletingAlbumByAlbumId);
