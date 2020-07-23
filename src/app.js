@@ -26,6 +26,8 @@ app.post('/artists/:artistId/albums', albumControllers.createAlbum);
 
 app.get('/artists/:artistId/albums/:albumId', albumControllers.readingAlbumByAlbumId);
 
+app.get('/artists/:artistId/albums', albumControllers.readingAlbumByArtistId);
+
 app.patch('/artists/:artistId/albums/:albumId', albumControllers.updatingAlbumbyAlbumId);
 
 app.delete('/artists/:artistId/albums/:albumId', albumControllers.deletingAlbumByAlbumId);
@@ -34,8 +36,8 @@ app.delete('/artists/:artistId/albums/:albumId', albumControllers.deletingAlbumB
 
 app.post('/albums/:id/songs', songControllers.createSong);
 
-app.get('/albums/:id/songs', songControllers.getSongByAlbumId);
+app.get('/albums/:id/songs', songControllers.getSongsByAlbumId);
 
-// app.delete('albums/:id/songs', songControllers.deleteSongByAlbumId);
+app.delete('/albums/:id/songs', songControllers.deleteSongByAlbumId);
 
 module.exports = app;
