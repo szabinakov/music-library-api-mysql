@@ -18,11 +18,26 @@ exports.createAlbum = (req, res) => {
     });
 };
 
+exports.readingAlbumByArtistId = (req, res) => {
+    const { artistId } = req.params
+
+    Artist.findByPk(artistId).then((foundArtist) => {
+        if (!foundArtist) {
+            res.status(404).json({ error: 'Artist does not exist.' })
+        } else {
+            Album.findAll({ where: { artistId: artistId } }).then((foundAlbum) => {
+                res.status(201).json(foundAlbum)
+            })
+        }
+    })
+}
 
 exports.readingAlbumByAlbumId = (req, res) => {
+    const { artistId } = req.params
     const { albumId } = req.params
-    Album.findByPk(albumId).then((foundAlbum) => {
-        if (!foundAlbum) {
+
+    Album.findAll({ where: { id: albumId, artistId: artistId } }).then((foundAlbum) => {
+        if (foundAlbum.length === 0) {
             res.status(404).json({ error: 'This Album does not exist.' })
         } else {
             res.status(201).json(foundAlbum)
@@ -30,25 +45,23 @@ exports.readingAlbumByAlbumId = (req, res) => {
     })
 }
 
+
 exports.updatingAlbumbyAlbumId = (req, res) => {
-    const { artistId } = req.params
+    const { artistId } = req.params;
     const { albumId } = req.params;
 
-    Artist.findByPk(artistId).then((foundArtist) => {
-        if (!foundArtist) {
-            res.status(404).json({ error: 'Artist does not exist.' })
+    Album.findAll({ where: { artistId: artistId, id: albumId } }).then((foundAlbums) => {
+        if (!foundAlbums) {
+            res.status(404).json({ error: 'The album could not be found.' });
         } else {
-            Album.update(req.body, { where: { id: albumId } }).then(([updatedAlbum]) => {
-                if (!updatedAlbum) {
-                    res.status(404).json({ error: 'The Album does not exist.' });
-                } else {
-                    res.status(201).json(updatedAlbum);
-                }
-            }
-            )
+            Album.update(req.body, { where: { artistId: artistId, id: albumId } })
+                .then((updatedAlbum) => {
+                    res.status(201).json(updatedAlbum)
+                })
         }
-    })
+    });
 }
+
 
 exports.deletingAlbumByAlbumId = (req, res) => {
     const { artistId } = req.params
@@ -66,4 +79,7 @@ exports.deletingAlbumByAlbumId = (req, res) => {
     })
 
 }
+
+
+
 

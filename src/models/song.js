@@ -6,3 +6,6 @@ module.exports = (sequelize, DataTypes) => {
     const Song = sequelize.define('Song', schema)
     return Song
 }
+
+
+

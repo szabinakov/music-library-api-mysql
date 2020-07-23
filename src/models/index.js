@@ -16,11 +16,12 @@ const setupDatabase = () => {
   const Artist = ArtistModel(connection, Sequelize);
 
   const Album = AlbumModel(connection, Sequelize);
+
   Album.belongsTo(Artist, { as: 'artist' });
 
   const Song = SongModel(connection, Sequelize);
-  Song.belongsTo(Album, { as: 'album' })
-  Song.belongsTo(Artist, { as: 'artist' })
+  Song.belongsTo(Album, { foreignKey: 'albumId' })
+  Song.belongsTo(Artist, { foreignKey: 'artistId' })
 
   connection.sync({ alter: true });
 
@@ -32,3 +33,5 @@ const setupDatabase = () => {
 };
 
 module.exports = setupDatabase();
+
+

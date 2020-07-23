@@ -9,7 +9,6 @@ exports.listAllArtist = (_, res) => {
         res.status(200).json(artists);
     });
 };
-
 exports.getId = (req, res) => {
     const { artistId } = req.params;
     Artist.findByPk(artistId).then(artist => {
@@ -44,3 +43,8 @@ exports.deleteArtist = (req, res) => {
         }
     })
 }
+
+
+
+
+
